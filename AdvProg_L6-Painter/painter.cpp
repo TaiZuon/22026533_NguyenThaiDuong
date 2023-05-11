@@ -1,81 +1,84 @@
 #include "painter.h"
-
+#include<math.h>
 /***
-    Args: color (SDL_Color): color value 
-        
+    Args: color (SDL_Color): color value
+
     Returns:
         None
 ***/
-void Painter::setColor(SDL_Color color) 
-{ 
+void Painter::setColor(SDL_Color c)
+{
     // TODO: set the color value for the Painter and set Render Draw Color
-    (this->color) = color;
-    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+    color = c;
+    SDL_SetRenderDrawColor( renderer, c.r, c.g, c.b, c.a );
 }
 
 
 /***
     Args: numPixel (int): number of pixel for jumping forward
-        
+
     Returns:
         None
 ***/
 void Painter::jumpForward(int numPixel)
 {
     // TODO: jump the painter forward
-    double rad = (angle / 180) * M_PI;
-    x += (int) (cos(rad) * (double) numPixel);
-    y -= (int) (sin(rad) * (double) numPixel);
+    double rad = M_PI*angle/180;
+    int diffX = numPixel*cos(rad);
+    int diffY = -numPixel*sin(rad);
+    x = x + diffX;
+    y = y + diffY;
 }
 
 
 /***
     Args: numPixel (int): number of pixel for jumping backward
-        
+
     Returns:
         None
 ***/
 void Painter::jumpBackward(int numPixel)
 {
     // TODO: jump the painter backward
-    this->jumpForward(-numPixel);
+    double rad = M_PI*angle/180;
+    int diffX = -numPixel*cos(rad);
+    int diffY = numPixel*sin(rad);
+    x = x + diffX;
+    y = y + diffY;
 }
 
 
 /***
     Args: degree (double): the value of rotation angle
-        
+
     Returns:
         None
 ***/
-
-void compress(double& angle) {
-    while (angle >= 360) angle -= 360;
-    while (angle < 0) angle += 360;
-}
-
 void Painter::turnLeft(double degree)
 {
-    // TODO: rotate left the painter   
-    angle += degree;
-    compress(angle);
+    // TODO: rotate left the painter
+
+    angle = (angle + degree);
+    if(angle >= 360){angle -= 360;}
 }
 
 
 /***
     Args: degree (double): the value of rotation angle
-        
+
     Returns:
         None
-***/     
+***/
 void Painter::turnRight(double degree)
 {
-    // TODO: rotate right the painter   
-    this->turnLeft(-degree);
+    // TODO: rotate right the painter
+
+    angle = (angle - degree);
+    if(angle >= 360){angle -= 360;}
 }
 
-/***  
-    Args: 
+/***
+    Args:
         None
     Returns:
         None
@@ -83,11 +86,7 @@ void Painter::turnRight(double degree)
 void Painter::randomColor()
 {
     // TODO: set random color
-    int r = rand() % 256;
-    int g = rand() % 256;
-    int b = rand() % 256;
-    SDL_Color color = {r, g, b};
-    setColor(color);    
+    SDL_SetRenderDrawColor( renderer, 0xFF, 0xFF, 0xFF, 0xFF );
 }
 
 
@@ -98,7 +97,7 @@ void Painter::clearWithBgColor(SDL_Color bgColor)
 {
     SDL_Color curColor = color;
     setColor(bgColor);
-	SDL_RenderClear(renderer);    
+	SDL_RenderClear(renderer);
     setColor(curColor);
 }
 
@@ -160,7 +159,7 @@ void Painter::createParallelogram(int size)
         turnLeft(60);
         moveForward(size);
         turnLeft(120);
-    }	
+    }
 }
 
 
